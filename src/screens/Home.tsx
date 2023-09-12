@@ -1,16 +1,25 @@
 import React from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View} from "react-native";
+import {globalStyles} from "../theme";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 export const Home = () => {
+  const {top} = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
-      <Text>HomeScreen</Text>
-    </View>
+    <>
+      <Image
+        source={require("../assets/pokebola.png")}
+        style={globalStyles.pokebolaBg}
+      />
+
+      <Text
+        style={{...globalStyles.title, ...globalStyles.margin, top: top + 20}}>
+        Pokedex
+      </Text>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 60,
-  },
+  container: {},
 });
