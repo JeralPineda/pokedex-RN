@@ -10,13 +10,13 @@ const AppNavigation = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        // headerShown: false,
-        // headerStyle: {
-        //   elevation: 0,
-        //   // shadowColor: "transparent", //IOS
-        // },
+        headerShown: false,
+        headerStyle: {
+          elevation: 0,
+          // shadowColor: "transparent", //IOS
+        },
         cardStyle: {
-          // backgroundColor: "white",
+          backgroundColor: "white",
         },
       }}>
       <Stack.Screen name="Home" component={Home} />
