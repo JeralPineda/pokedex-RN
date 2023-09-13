@@ -7,7 +7,7 @@ import {usePokemonPaginated} from "../hooks";
 export const Home = () => {
   const {top} = useSafeAreaInsets();
 
-  const {} = usePokemonPaginated();
+  const {simplePokemons} = usePokemonPaginated();
 
   return (
     <>
