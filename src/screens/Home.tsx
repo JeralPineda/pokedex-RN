@@ -2,6 +2,7 @@ import React from "react";
 import {
   Image,
   StyleSheet,
+  View,
   Text,
   FlatList,
   ActivityIndicator,
@@ -10,7 +11,7 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 import {globalStyles} from "../theme";
 import {usePokemonPaginated} from "../hooks";
-import {FadeInImage} from "../components";
+import {PokemonCard} from "../components";
 
 export const Home = () => {
   const {top} = useSafeAreaInsets();
@@ -24,30 +25,41 @@ export const Home = () => {
         style={globalStyles.pokebolaBg}
       />
 
-      <FlatList
-        data={simplePokemons}
-        keyExtractor={pokemon => pokemon.id.toString()}
-        showsVerticalScrollIndicator={false}
-        renderItem={({item}) => (
-          <FadeInImage uri={item.picture} style={styles.image} />
-        )}
-        //infinite scroll
-        onEndReached={loadPokemons}
-        onEndReachedThreshold={0.4}
-        ListFooterComponent={
-          <ActivityIndicator style={styles.spiner} size={20} color="grey" />
-        }
-      />
-
-      {/* <Text
-        style={{...globalStyles.title, ...globalStyles.margin, top: top + 20}}>
-        Pokedex
-      </Text> */}
+      <View style={styles.container}>
+        <FlatList
+          data={simplePokemons}
+          keyExtractor={pokemon => pokemon.id.toString()}
+          showsVerticalScrollIndicator={false}
+          numColumns={2}
+          renderItem={({item}) => <PokemonCard pokemon={item} />}
+          //Header
+          ListHeaderComponent={
+            <Text
+              style={{
+                ...globalStyles.title,
+                ...globalStyles.margin,
+                top: top + 20,
+                marginBottom: top + 20,
+              }}>
+              Pokedex
+            </Text>
+          }
+          //infinite scroll
+          onEndReached={loadPokemons}
+          onEndReachedThreshold={0.4}
+          ListFooterComponent={
+            <ActivityIndicator style={styles.spiner} size={20} color="grey" />
+          }
+        />
+      </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+  },
   spiner: {
     height: 100,
   },
