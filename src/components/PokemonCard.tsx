@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import {
   StyleSheet,
   Text,
@@ -7,21 +7,65 @@ import {
   Dimensions,
   Image,
 } from "react-native";
+// import ImageColor from "react-native-image-colors";
 import {SimplePokemon} from "../types/pokemon";
 import {FadeInImage} from "./FadeInImage";
+import {getImageColors} from "../helpers/getColors";
+import LinearGradient from "react-native-linear-gradient";
 
 const windowWidth = Dimensions.get("window").width;
+const delay = 3;
 
 interface PokemonCardProps {
   pokemon: SimplePokemon;
 }
 
 export const PokemonCard = ({pokemon}: PokemonCardProps) => {
+  const [bgcolor, setBgcolor] = useState("grey");
+  const [bgColor2, setBgColor2] = useState("grey");
+
+  const getPosterColors = async () => {
+    const [primary = "grey", secondary = "grey"] = await getImageColors(
+      pokemon.picture,
+    );
+    setBgcolor(primary);
+    setBgColor2(secondary);
+
+    // setMainColors({primary, secondary});
+  };
+
+  useEffect(() => {
+    let timer1 = setTimeout(() => getPosterColors(), delay * 1000);
+
+    // this will clear Timeout
+    // when component unmount like in willComponentUnmount
+    // and show will not change to true
+    return () => {
+      clearTimeout(timer1);
+    };
+  }, []);
+
   return (
     <TouchableOpacity activeOpacity={0.8}>
-      <View style={styles.cardContainer}>
+      <View
+        style={{
+          ...styles.cardContainer,
+
+          // backgroundColor: bgcolor,
+        }}>
+        <LinearGradient
+          colors={[bgColor2, bgcolor]}
+          start={{x: 0.1, y: 0.1}}
+          end={{x: 0.5, y: 0.5}}
+          style={{...StyleSheet.absoluteFillObject, ...styles.gradient}}
+        />
+
         <View>
-          <Text style={{...styles.name, width: windowWidth * 0.4}}>
+          <Text
+            style={{
+              ...styles.name,
+              width: windowWidth * 0.4,
+            }}>
             {pokemon.name}
             {"\n#" + pokemon.id}
           </Text>
@@ -43,7 +87,7 @@ export const PokemonCard = ({pokemon}: PokemonCardProps) => {
 const styles = StyleSheet.create({
   cardContainer: {
     marginHorizontal: 10,
-    backgroundColor: "red",
+    // backgroundColor: "grey",
     height: 120,
     width: 160,
     marginBottom: 25,
@@ -60,12 +104,16 @@ const styles = StyleSheet.create({
 
     elevation: 14,
   },
+  gradient: {
+    borderRadius: 10,
+  },
   name: {
     color: "#fff",
     fontSize: 20,
     fontWeight: "bold",
     top: 20,
     left: 10,
+    textTransform: "capitalize",
   },
   pokebolaContainer: {
     width: 100,
