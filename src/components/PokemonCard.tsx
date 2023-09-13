@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {
   StyleSheet,
   Text,
@@ -14,18 +14,19 @@ import {getImageColors} from "../helpers/getColors";
 import LinearGradient from "react-native-linear-gradient";
 
 const windowWidth = Dimensions.get("window").width;
-const delay = 3;
+const delay = 2;
 
 interface PokemonCardProps {
   pokemon: SimplePokemon;
 }
 
 export const PokemonCard = ({pokemon}: PokemonCardProps) => {
-  const [bgcolor, setBgcolor] = useState("grey");
-  const [bgColor2, setBgColor2] = useState("grey");
+  const [bgcolor, setBgcolor] = useState("#b4b4b4");
+  const [bgColor2, setBgColor2] = useState("#808080");
+  const isMounted = useRef(true);
 
   const getPosterColors = async () => {
-    const [primary = "grey", secondary = "grey"] = await getImageColors(
+    const [primary = "#b4b4b4", secondary = "#808080"] = await getImageColors(
       pokemon.picture,
     );
     setBgcolor(primary);
@@ -35,13 +36,17 @@ export const PokemonCard = ({pokemon}: PokemonCardProps) => {
   };
 
   useEffect(() => {
-    let timer1 = setTimeout(() => getPosterColors(), delay * 1000);
+    let timer1 = setTimeout(() => {
+      if (!isMounted.current) {
+        return;
+      }
 
-    // this will clear Timeout
-    // when component unmount like in willComponentUnmount
-    // and show will not change to true
+      getPosterColors();
+    }, delay * 1000);
+
     return () => {
       clearTimeout(timer1);
+      isMounted.current = false;
     };
   }, []);
 
