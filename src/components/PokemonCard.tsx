@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect, useRef} from "react";
 import {
   StyleSheet,
@@ -7,11 +8,14 @@ import {
   Dimensions,
   Image,
 } from "react-native";
-// import ImageColor from "react-native-image-colors";
+import {useNavigation} from "@react-navigation/native";
+import {StackNavigationProp} from "@react-navigation/stack";
+import LinearGradient from "react-native-linear-gradient";
+
 import {SimplePokemon} from "../types/pokemon";
 import {FadeInImage} from "./FadeInImage";
 import {getImageColors} from "../helpers/getColors";
-import LinearGradient from "react-native-linear-gradient";
+import {RootStackParams} from "../navigation/AppNavigation";
 
 const windowWidth = Dimensions.get("window").width;
 const delay = 2;
@@ -21,15 +25,18 @@ interface PokemonCardProps {
 }
 
 export const PokemonCard = ({pokemon}: PokemonCardProps) => {
-  const [bgcolor, setBgcolor] = useState("#b4b4b4");
+  const [bgColor, setBgColor] = useState("#b4b4b4");
   const [bgColor2, setBgColor2] = useState("#808080");
   const isMounted = useRef(true);
+
+  const navigation =
+    useNavigation<StackNavigationProp<RootStackParams, "Pokemon">>();
 
   const getPosterColors = async () => {
     const [primary = "#b4b4b4", secondary = "#808080"] = await getImageColors(
       pokemon.picture,
     );
-    setBgcolor(primary);
+    setBgColor(primary);
     setBgColor2(secondary);
 
     // setMainColors({primary, secondary});
@@ -51,7 +58,17 @@ export const PokemonCard = ({pokemon}: PokemonCardProps) => {
   }, []);
 
   return (
-    <TouchableOpacity activeOpacity={0.8}>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={() =>
+        navigation.navigate("Pokemon", {
+          simplePokemon: pokemon,
+          colors: {
+            primary: bgColor,
+            secondary: bgColor2,
+          },
+        })
+      }>
       <View
         style={{
           ...styles.cardContainer,
@@ -59,7 +76,7 @@ export const PokemonCard = ({pokemon}: PokemonCardProps) => {
           // backgroundColor: bgcolor,
         }}>
         <LinearGradient
-          colors={[bgColor2, bgcolor]}
+          colors={[bgColor2, bgColor]}
           start={{x: 0.1, y: 0.1}}
           end={{x: 0.5, y: 0.5}}
           style={{...StyleSheet.absoluteFillObject, ...styles.gradient}}

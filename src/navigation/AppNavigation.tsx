@@ -3,8 +3,18 @@ import {createStackNavigator} from "@react-navigation/stack";
 
 import {Home} from "../screens/Home";
 import {Pokemon} from "../screens/Pokemon";
+import {SimplePokemon} from "../types/pokemon";
 
-const Stack = createStackNavigator();
+export type Colors = {
+  primary: string;
+  secondary: string;
+};
+export type RootStackParams = {
+  Home: undefined;
+  Pokemon: {simplePokemon: SimplePokemon; colors: Colors};
+};
+
+const Stack = createStackNavigator<RootStackParams>();
 
 const AppNavigation = () => {
   return (
