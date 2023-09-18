@@ -1,12 +1,20 @@
 import {StackScreenProps} from "@react-navigation/stack";
 import React from "react";
-import {StyleSheet, Text, View, TouchableOpacity, Image} from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Ionicons";
 
 import {RootStackParams} from "../navigation/AppNavigation";
 import {FadeInImage} from "../components";
+import {usePokemon} from "../hooks";
 
 interface PokemonProps extends StackScreenProps<RootStackParams, "Pokemon"> {}
 
@@ -15,9 +23,11 @@ export const Pokemon = ({navigation, route}: PokemonProps) => {
   const {name, id, picture} = simplePokemon;
 
   const {top} = useSafeAreaInsets();
+  const {pokemon, isLoading} = usePokemon(id);
+  console.log(pokemon);
 
   return (
-    <View>
+    <View style={styles.pokemonContainer}>
       {/* Header Container */}
       <View style={{...styles.headerContainer}}>
         {/* Gradient */}
@@ -50,11 +60,19 @@ export const Pokemon = ({navigation, route}: PokemonProps) => {
 
         <FadeInImage uri={picture} style={styles.pokemonImage} />
       </View>
+
+      {/* Detalles y loading */}
+      <View style={styles.activityIndicator}>
+        <ActivityIndicator color={colors.primary} size={50} />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  pokemonContainer: {
+    flex: 1,
+  },
   headerContainer: {
     height: 370,
     zIndex: 999,
@@ -88,5 +106,12 @@ const styles = StyleSheet.create({
     height: 250,
     position: "absolute",
     bottom: -15,
+  },
+  activityIndicator: {
+    flex: 1,
+    // height: 200,
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
