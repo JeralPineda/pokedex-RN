@@ -25,7 +25,6 @@ export const Pokemon = ({navigation, route}: PokemonProps) => {
 
   const {top} = useSafeAreaInsets();
   const {pokemon, isLoading} = usePokemon(id);
-  console.log(pokemon);
 
   return (
     <View style={styles.pokemonContainer}>
