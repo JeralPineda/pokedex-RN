@@ -13,7 +13,7 @@ export const SearchInput = () => {
           <TextInput
             style={styles.input}
             placeholder="Buscar"
-            placeholderTextColor="#000"
+            placeholderTextColor="#7e7d7d"
             cursorColor="#000"
           />
         </View>
