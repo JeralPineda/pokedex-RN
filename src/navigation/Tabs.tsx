@@ -47,7 +47,7 @@ export const Tabs = () => {
         name="Search"
         component={Search}
         options={{
-          tabBarLabel: "Buscar",
+          tabBarLabel: "Busqueda",
           tabBarIcon: ({color}) => (
             <Icon color={color} size={25} name="search-outline" />
           ),
