@@ -10,7 +10,7 @@ export type Colors = {
   secondary: string;
 };
 export type RootStackParams = {
-  Home: undefined;
+  HomeScreen: undefined;
   Pokemon: {simplePokemon: SimplePokemon; colors: Colors};
 };
 
@@ -29,7 +29,7 @@ const AppNavigation = () => {
           backgroundColor: "white",
         },
       }}>
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="HomeScreen" component={Home} />
       <Stack.Screen name="Pokemon" component={Pokemon} />
     </Stack.Navigator>
   );
