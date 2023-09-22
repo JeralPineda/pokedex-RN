@@ -1,10 +1,10 @@
 import React from "react";
-import {StyleSheet, Text, View, TextInput} from "react-native";
+import {StyleSheet, Text, View, TextInput, Animated} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
 export const SearchInput = () => {
   return (
-    <View style={styles.header}>
+    <Animated.View style={[styles.header, {}]}>
       <View style={styles.container}>
         <View style={styles.iconContainer}>
           <Icon name="search-outline" size={20} color="#000" />
@@ -18,7 +18,7 @@ export const SearchInput = () => {
           />
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
