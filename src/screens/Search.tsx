@@ -1,8 +1,17 @@
 import React, {useRef, useEffect, useState} from "react";
-import {StyleSheet, View, Platform, Animated} from "react-native";
+import {
+  StyleSheet,
+  View,
+  Platform,
+  Animated,
+  Text,
+  FlatList,
+} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {SearchInput} from "../components";
+import {PokemonCard, SearchInput} from "../components";
 import {usePokemonSearch} from "../hooks/usePokemonSearch";
+import {ActivityIndicator} from "react-native";
+import {globalStyles} from "../theme";
 
 const CONTAINER_HEIGHT = 50; //Min Height of the Header
 
@@ -25,7 +34,12 @@ export const Search = () => {
   }, []);
 
   if (isFetching) {
-    return <View></View>;
+    return (
+      <View style={styles.activityContainer}>
+        <ActivityIndicator size={50} color="grey" />
+        <Text style={styles.activityText}>Cargando...</Text>
+      </View>
+    );
   }
 
   return (
@@ -36,13 +50,33 @@ export const Search = () => {
       }}>
       <SearchInput />
 
-      <Animated.ScrollView
+      {/* <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {y: scrollY}}}],
           {useNativeDriver: true},
-        )}></Animated.ScrollView>
+        )}> */}
+      <FlatList
+        data={simplePokemons}
+        keyExtractor={pokemon => pokemon.id.toString()}
+        showsVerticalScrollIndicator={false}
+        numColumns={2}
+        renderItem={({item}) => <PokemonCard pokemon={item} />}
+        //Header
+        ListHeaderComponent={
+          <Text
+            style={{
+              ...globalStyles.title,
+              ...globalStyles.margin,
+              // top: top + 20,
+              // marginBottom: top + 20,
+            }}>
+            Pokedex
+          </Text>
+        }
+      />
+      {/* </Animated.ScrollView> */}
     </View>
   );
 };
@@ -50,8 +84,21 @@ export const Search = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+
     // height: 1000,
     // backgroundColor: "#f37e7e",
     // marginHorizontal: 20,
+  },
+  activityContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  activityText: {
+    color: "#000",
+  },
+  spiner: {
+    height: 100,
   },
 });
