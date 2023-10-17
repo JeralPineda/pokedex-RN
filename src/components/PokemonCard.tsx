@@ -114,17 +114,18 @@ const styles = StyleSheet.create({
     width: 160,
     marginBottom: 25,
     borderRadius: 10,
+    outline: "1px solid red",
 
     //shadown
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 7,
+      height: 2,
     },
-    shadowOpacity: 0.41,
-    shadowRadius: 9.11,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
 
-    elevation: 14,
+    elevation: 5,
   },
   gradient: {
     borderRadius: 10,
