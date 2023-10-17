@@ -1,65 +1,83 @@
-import React from "react";
-import {StyleSheet, View, TextInput, Animated} from "react-native";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useEffect, useState} from "react";
+import {
+  Platform,
+  StyleSheet,
+  View,
+  StyleProp,
+  ViewStyle,
+  TextInput,
+} from "react-native";
+// import {} from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
+import {useDebouncedValue} from "../hooks";
 
-export const SearchInput = () => {
+interface Props {
+  onDebounce: (value: string) => void;
+  style?: StyleProp<ViewStyle>;
+}
+
+export const SearchInput = ({style, onDebounce}: Props) => {
+  const [textValue, setTextValue] = useState("");
+
+  const deboncedValue = useDebouncedValue(textValue);
+
+  useEffect(() => {
+    onDebounce(deboncedValue);
+  }, [deboncedValue]);
+
   return (
-    <Animated.View style={[styles.header, {}]}>
-      <View style={styles.container}>
-        <View style={styles.iconContainer}>
-          <Icon name="search-outline" size={20} color="#000" />
-        </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Buscar"
-            placeholderTextColor="#7e7d7d"
-            cursorColor="#000"
-          />
-        </View>
+    <View
+      style={{
+        ...styles.container,
+        ...(style as any),
+      }}>
+      <View style={styles.textBackground}>
+        <TextInput
+          placeholder="Buscar pokémon"
+          placeholderTextColor="#7e7d7d"
+          cursorColor="#3a3a3a"
+          style={{
+            ...styles.textInput,
+            top: Platform.OS === "ios" ? 0 : 2,
+          }}
+          autoCapitalize="none"
+          autoCorrect={false}
+          value={textValue}
+          onChangeText={setTextValue}
+        />
+
+        <Icon name="search-outline" color="grey" size={30} />
       </View>
-    </Animated.View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    width: "100%",
-    // margin: 0,
-    // padding: 0,
-    height: 60,
-    // position: "absolute",
-    // top: 0,
-    // left: 0,
-    marginTop: -10,
-    padding: 20,
-    elevation: 8,
-    // alignItems: "center",
-    justifyContent: "center",
-
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
   container: {
-    height: 45,
-    backgroundColor: "#eee",
-    borderRadius: 10,
+    // backgroundColor: 'red'
+  },
+  textBackground: {
+    backgroundColor: "#F3F1F3",
+    borderRadius: 50,
+    height: 40,
+    paddingHorizontal: 20,
+    justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
-  iconContainer: {
-    flex: 0.1,
-    // marginLeft: 3,
-    alignItems: "center",
-    // justifyContent: "center",
-  },
-  inputContainer: {
+  textInput: {
     flex: 1,
-    // borderWidth: 0,
-  },
-  input: {
-    color: "#000",
-    // borderWidth: 0,
+    fontSize: 18,
+    color: "gray",
   },
 });

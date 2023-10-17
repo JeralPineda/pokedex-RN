@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useRef, useEffect, useState} from "react";
 import {
   StyleSheet,
@@ -6,20 +7,23 @@ import {
   Animated,
   Text,
   FlatList,
+  Dimensions,
 } from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {PokemonCard, SearchInput} from "../components";
+import {Loading, PokemonCard, SearchInput} from "../components";
 import {usePokemonSearch} from "../hooks/usePokemonSearch";
 import {ActivityIndicator} from "react-native";
-import {globalStyles} from "../theme";
 
 const CONTAINER_HEIGHT = 50; //Min Height of the Header
+
+const screenWidth = Dimensions.get("window").width;
 
 export const Search = () => {
   const {top} = useSafeAreaInsets();
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const {isFetching, simplePokemons} = usePokemonSearch();
+  const [term, setTerm] = useState("");
 
   const [scrollValue, setScrollValue] = useState(0);
   const [clampedScrollValue, setClampedScrollValue] = useState(0);
@@ -34,12 +38,7 @@ export const Search = () => {
   }, []);
 
   if (isFetching) {
-    return (
-      <View style={styles.activityContainer}>
-        <ActivityIndicator size={50} color="grey" />
-        <Text style={styles.activityText}>Cargando...</Text>
-      </View>
-    );
+    return <Loading />;
   }
 
   return (
@@ -48,35 +47,35 @@ export const Search = () => {
         ...styles.container,
         marginTop: Platform.OS === "ios" ? top : top + 10,
       }}>
-      <SearchInput />
+      <SearchInput
+        onDebounce={value => setTerm(value)}
+        style={{
+          position: "absolute",
+          zIndex: 999,
+          width: screenWidth - 40,
+          top: Platform.OS === "ios" ? top : top + 30,
+        }}
+      />
 
-      {/* <Animated.ScrollView
-        showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}],
-          {useNativeDriver: true},
-        )}> */}
       <FlatList
         data={simplePokemons}
-        keyExtractor={pokemon => pokemon.id.toString()}
+        keyExtractor={pokemon => pokemon.id}
         showsVerticalScrollIndicator={false}
         numColumns={2}
-        renderItem={({item}) => <PokemonCard pokemon={item} />}
-        //Header
+        // Header
         ListHeaderComponent={
           <Text
             style={{
-              ...globalStyles.title,
-              ...globalStyles.margin,
-              // top: top + 20,
-              // marginBottom: top + 20,
+              ...styles.title,
+              ...styles.globalMargin,
+              paddingBottom: 10,
+              marginTop: Platform.OS === "ios" ? top + 60 : top + 80,
             }}>
-            Pokedex
+            {term}
           </Text>
         }
+        renderItem={({item}) => <PokemonCard pokemon={item} />}
       />
-      {/* </Animated.ScrollView> */}
     </View>
   );
 };
@@ -95,9 +94,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  activityText: {
-    color: "#000",
-  },
+
   spiner: {
     height: 100,
   },
