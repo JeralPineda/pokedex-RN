@@ -10,9 +10,11 @@ import {
   Dimensions,
 } from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
+
 import {Loading, PokemonCard, SearchInput} from "../components";
 import {usePokemonSearch} from "../hooks/usePokemonSearch";
-import {ActivityIndicator} from "react-native";
+import {globalStyles} from "../theme";
+import {SimplePokemon} from "../types/pokemon";
 
 const CONTAINER_HEIGHT = 50; //Min Height of the Header
 
@@ -23,6 +25,7 @@ export const Search = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const {isFetching, simplePokemons} = usePokemonSearch();
+  const [pokemonFiltered, setPokemonFiltered] = useState<SimplePokemon[]>([]);
   const [term, setTerm] = useState("");
 
   const [scrollValue, setScrollValue] = useState(0);
@@ -36,6 +39,18 @@ export const Search = () => {
       CONTAINER_HEIGHT;
     });
   }, []);
+
+  useEffect(() => {
+    if (term.length === 0) {
+      return setPokemonFiltered([]);
+    }
+
+    setPokemonFiltered(
+      simplePokemons.filter(poke =>
+        poke.name.toLocaleLowerCase().includes(term.toLocaleLowerCase()),
+      ),
+    );
+  }, [term]);
 
   if (isFetching) {
     return <Loading />;
@@ -58,7 +73,7 @@ export const Search = () => {
       />
 
       <FlatList
-        data={simplePokemons}
+        data={pokemonFiltered}
         keyExtractor={pokemon => pokemon.id}
         showsVerticalScrollIndicator={false}
         numColumns={2}
@@ -66,9 +81,10 @@ export const Search = () => {
         ListHeaderComponent={
           <Text
             style={{
-              ...styles.title,
-              ...styles.globalMargin,
+              ...globalStyles.title,
+              ...globalStyles.margin,
               paddingBottom: 10,
+              textTransform: "capitalize",
               marginTop: Platform.OS === "ios" ? top + 60 : top + 80,
             }}>
             {term}
