@@ -45,11 +45,16 @@ export const Search = () => {
       return setPokemonFiltered([]);
     }
 
-    setPokemonFiltered(
-      simplePokemons.filter(poke =>
-        poke.name.toLocaleLowerCase().includes(term.toLocaleLowerCase()),
-      ),
-    );
+    if (isNaN(Number(term))) {
+      setPokemonFiltered(
+        simplePokemons.filter(poke =>
+          poke.name.toLocaleLowerCase().includes(term.toLocaleLowerCase()),
+        ),
+      );
+    } else {
+      const pokemonById = simplePokemons.find(poke => poke.id === term);
+      setPokemonFiltered(pokemonById ? [pokemonById] : []);
+    }
   }, [term]);
 
   if (isFetching) {
